@@ -58,3 +58,9 @@ query = inputs @ W__query   # Transformed query for all inputs
 keys = inputs @ W__key     # Transformed keys for all inputs
 attn_scores = query @ keys.T  # Attention scores for query_2 against all keys
 print("Attention Scores (using original query and transformed keys):\n", attn_scores)
+
+attn_weights = torch.softmax(attn_scores / (d_out ** 0.5), dim=-1)  # Softmax to get attention weights
+print("Attention Weights:\n", attn_weights)
+
+result = attn_weights @ values  # Weighted sum of values based on attention weights
+print("Resulting vector after applying attention weights to values:\n", result)
