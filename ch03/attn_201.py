@@ -64,12 +64,16 @@ print("Values after applying attention weights:\n", values)
 
 
 context_length = inputs.shape[0]
-data = torch.ones(context_length, context_length)
-print("Data:\n", data)
-mask = torch.tril(data)  # Lower triangular mask
-print("Mask:\n", mask)
+result = torch.triu(torch.ones(context_length, context_length), diagonal=1)  # Upper triangular matrix
+print("Upper Triangular Matrix:\n", result)
 
-data = torch.ones(context_length, context_length)
-print("Data:\n", data)
-data = torch.nn.Dropout(p=0.2)(data)  # Apply dropout
-print("Data after Dropout:\n", data)    
+masked = attn_scores.masked_fill(result.bool(), -torch.inf)  # Apply mask to attention scores
+print("Masked Attention Scores:\n", masked)
+attn_weights = torch.softmax(masked / (d_out ** 0.5), dim=-1)  # Softmax to get attention weights
+print("Attention Weights after Masking:\n", attn_weights)
+torch.manual_seed(123) # for reproducibility
+dropout_layer = torch.nn.Dropout(p=0.5)
+attn_weights_dropped = dropout_layer(attn_weights)
+print("Attention Weights after Dropout:\n", attn_weights_dropped)
+values_dropped = attn_weights_dropped @ values  # Weighted sum of values based on dropped attention weights 
+print("Values after applying attention weights with Dropout:\n", values_dropped)
