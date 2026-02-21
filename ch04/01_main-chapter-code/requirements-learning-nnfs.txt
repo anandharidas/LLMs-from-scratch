@@ -1,0 +1,6 @@
+# Minimal deps for Learning_neural_network_from_scratch.ipynb
+numpy>=1.26
+matplotlib>=3.7
+jupyter>=1.0
+# Optional: official NNFS spiral dataset (notebook has NumPy fallback if missing)
+# nnfs
